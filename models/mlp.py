@@ -1,7 +1,7 @@
 import torch.nn as nn
 
 class MLP(nn.Module):
-    def __init__(self, input_size=128*128*1, num_classes=10):
+    def __init__(self, input_size=128*128*1, num_classes=6):
         super().__init__()
 
         self.fc1 = nn.Linear(input_size, 512)
