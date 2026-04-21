@@ -1,4 +1,7 @@
 import torch
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 def evaluate(model, test_loader, device):
     model.eval()
@@ -22,3 +25,37 @@ def evaluate(model, test_loader, device):
     accuracy = correct / total
 
     return accuracy
+
+def count_params(model): 
+    return sum(p.numel() for p in model.parameters())
+
+def plot_confusion_matrix(model, test_loader, device, classes, ax, color, title="Confusion Matrix"):
+    model.eval()
+
+    all_preds = []
+    all_labels = []
+
+    with torch.no_grad():
+        for x, y in test_loader:
+            x = x.to(device)
+
+            outputs = model(x)
+            preds = outputs.argmax(dim=1).cpu().numpy()
+
+            all_preds.extend(preds)
+            all_labels.extend(y.numpy())
+
+    cm = confusion_matrix(all_labels, all_preds)
+
+    sns.heatmap(
+        cm,
+        annot=False,
+        cmap=color,
+        xticklabels=classes,
+        yticklabels=classes,
+        ax=ax
+    )
+
+    ax.set_title(title)
+    ax.set_xlabel("Predicted")
+    ax.set_ylabel("Actual")
