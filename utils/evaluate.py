@@ -29,7 +29,7 @@ def evaluate(model, test_loader, device):
 def count_params(model): 
     return sum(p.numel() for p in model.parameters())
 
-def plot_confusion_matrix(model, test_loader, device, classes, ax, color, title="Confusion Matrix"):
+def get_confusion_matrix(model, test_loader, device):
     model.eval()
 
     all_preds = []
@@ -45,7 +45,10 @@ def plot_confusion_matrix(model, test_loader, device, classes, ax, color, title=
             all_preds.extend(preds)
             all_labels.extend(y.numpy())
 
-    cm = confusion_matrix(all_labels, all_preds)
+    return confusion_matrix(all_labels, all_preds)
+
+
+def plot_confusion_matrix(cm, classes, ax, color, title="Confusion Matrix"):
 
     sns.heatmap(
         cm,
@@ -59,3 +62,4 @@ def plot_confusion_matrix(model, test_loader, device, classes, ax, color, title=
     ax.set_title(title)
     ax.set_xlabel("Predicted")
     ax.set_ylabel("Actual")
+
